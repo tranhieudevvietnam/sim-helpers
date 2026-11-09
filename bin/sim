@@ -1,0 +1,19 @@
+#!/bin/sh
+# sim: runs the commands in sim.mk. Run `sim` with no arguments for the list.
+
+if [ -z "${SIM_MK:-}" ]; then
+  # From a clone (./bin/sim) use the sim.mk next to it, else the installed one.
+  here=$(cd "$(dirname "$0")" && pwd)
+  if [ -f "$here/../sim.mk" ]; then
+    SIM_MK="$here/../sim.mk"
+  else
+    SIM_MK="$HOME/.local/share/sim/sim.mk"
+  fi
+fi
+
+if [ ! -f "$SIM_MK" ]; then
+  echo "✘ $SIM_MK not found. Reinstall from https://github.com/tranhieudevvietnam/sim-helpers" >&2
+  exit 1
+fi
+
+exec make --no-print-directory -f "$SIM_MK" "$@"
